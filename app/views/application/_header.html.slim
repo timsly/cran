@@ -1,0 +1,12 @@
+nav.navbar.navbar-default.navbar-static-top
+  .container
+    .navbar-header
+      button.navbar-toggle.collapsed aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" type="button" 
+        span.sr-only Toggle navigation
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      = link_to 'CRAN', root_path, class: 'navbar-brand'
+    .navbar-collapse.collapse
+      ul.nav.navbar-nav.navbar-right
+        li = link_to 'All packages', root_path

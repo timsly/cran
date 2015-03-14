@@ -9,8 +9,12 @@ gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'jquery-rails'
 gem 'turbolinks'
+gem 'bootstrap-sass'
+gem 'kaminari'
+gem 'bootstrap-kaminari-views'
 
 gem 'treetop-dcf', require: false
+gem 'slim'
 
 group :development, :test do
   gem 'byebug'
@@ -35,4 +39,3 @@ group :test do
   gem 'rspec-its'
   gem 'rspec-collection_matchers'
 end
-

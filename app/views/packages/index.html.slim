@@ -1,0 +1,13 @@
+.container
+  - if @packages
+    - @packages.each do |package|
+      .media
+        .media-body
+          h4 
+            = link_to package.name, package
+            small< = package.version
+          = package.title
+      hr
+    = paginate @packages, :theme => 'twitter-bootstrap-3'
+  - else
+    .alert.alert-warning role="alert" No packages found

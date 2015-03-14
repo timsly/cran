@@ -2,6 +2,8 @@ class Package < ActiveRecord::Base
   has_many :versions, dependent: :destroy
   belongs_to :latest_version, class_name: 'Version'
 
+  delegate :version, :title, :description, :published_at, to: :latest_version
+
   class << self
     def except_existing(remote_packages)
       existing = all.where(full_name: remote_packages.map(&:full_name)).pluck :full_name
@@ -24,5 +26,9 @@ class Package < ActiveRecord::Base
       package.full_name = remote_package.full_name
       package.save!
     end
+  end
+
+  def to_param
+    name
   end
 end

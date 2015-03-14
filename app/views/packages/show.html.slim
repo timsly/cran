@@ -1,0 +1,17 @@
+.container
+  .package-details
+    h1
+      = @package.name
+      small< = @package.version
+    hr
+    p.lead = @package.title
+    p = @package.description
+  hr
+  .package-versions
+    h4 Versions:
+    ul
+      - @package.versions.each do |version|
+        li
+          b> = version.version
+          | -
+          span.text-muted< = version.published_at.to_s :long
