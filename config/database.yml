@@ -1,0 +1,19 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+
+development:
+  <<: *default
+  username: cran
+  database: cran_development
+
+test:
+  <<: *default
+  database: cran_test
+
+production:
+  <<: *default
+  database: cran_production
+  username: cran
+  password: <%= ENV['CRAN_DATABASE_PASSWORD'] %>
