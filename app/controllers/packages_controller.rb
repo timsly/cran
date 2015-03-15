@@ -1,6 +1,8 @@
 class PackagesController < ApplicationController
   def index
-    @packages = Package.includes(:latest_version).page params[:page]
+    @packages = Package.includes(:latest_version)
+      .order(:name)
+      .page(params[:page])
   end
 
   def show
