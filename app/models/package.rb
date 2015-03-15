@@ -2,7 +2,8 @@ class Package < ActiveRecord::Base
   has_many :versions, dependent: :destroy
   belongs_to :latest_version, class_name: 'Version'
 
-  delegate :version, :title, :description, :published_at, to: :latest_version
+  delegate :version, :title, :description, :published_at,
+           :authors, :maintainers, to: :latest_version
 
   class << self
     def except_existing(remote_packages)
@@ -21,7 +22,7 @@ class Package < ActiveRecord::Base
     def create_from_remote(remote_package)
       package = all.find_or_initialize_by name: remote_package.name
       package.latest_version = package.versions.new remote_package.to_hash.slice(
-        :version, :title, :description, :published_at
+        :version, :title, :description, :published_at, :authors, :maintainers
       )
       package.full_name = remote_package.full_name
       package.save!

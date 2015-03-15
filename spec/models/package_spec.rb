@@ -38,7 +38,9 @@ RSpec.describe Package, type: :model do
           version: '0.9.2',
           title: 'Title',
           description: 'Description',
-          published_at: DateTime.current
+          published_at: DateTime.current,
+          authors: [{ name: 'Ev Fjord', email: nil }],
+          maintainers: [{ name: 'Ev Fjord', email: 'ev@fjord.com' }]
         }
       )
     end
@@ -61,6 +63,8 @@ RSpec.describe Package, type: :model do
       expect(version.title).to eql remote_package.to_hash[:title]
       expect(version.description).to eql remote_package.to_hash[:description]
       expect(version.published_at.to_s(:db)).to eql remote_package.to_hash[:published_at].to_s(:db)
+      expect(version.authors).to eql remote_package.to_hash[:authors]
+      expect(version.maintainers).to eql remote_package.to_hash[:maintainers]
     end
 
     it 'should update existing packge' do

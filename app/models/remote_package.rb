@@ -8,10 +8,25 @@ class RemotePackage
 
   attr_reader :name, :version
 
-  def self.all
-    list = open SOURCE + 'PACKAGES'
-    list.read.scan(/Package:\s([^\n]+)\nVersion:\s([^\n]+)\n/).map do |match|
-      new match[0], match[1]
+  class << self
+    def all
+      list = open SOURCE + 'PACKAGES'
+      list.read.scan(/Package:\s([^\n]+)\nVersion:\s([^\n]+)\n/).map do |match|
+        new match[0], match[1]
+      end
+    end
+
+    def parse_people(data, with_and_in_the_end = nil)
+      splited = data.split ', '
+      splited = splited[0...-1] + splited[-1].split(' and ') if with_and_in_the_end
+      splited.map do |pair|
+        name = pair
+        email = nil
+        if matched = /(.*?)\s?<([^>]+)/.match(pair)
+          name, email = matched[1..2]
+        end
+        { name: name, email: email }
+      end
     end
   end
 
@@ -36,6 +51,14 @@ class RemotePackage
     @published_at ||= DateTime.parse(details['Date/Publication'])
   end
 
+  def authors
+    @authors ||= self.class.parse_people(details['Author'], true)
+  end
+
+  def maintainers
+    @maintainers ||= self.class.parse_people(details['Maintainer'])
+  end
+
   def details
     @details ||= begin
       gz = Zlib::GzipReader.new open(SOURCE + "#{full_name}.tar.gz")
@@ -51,7 +74,10 @@ class RemotePackage
   end
 
   def to_hash
-    [:name, :version, :full_name, :title, :description, :published_at].each_with_object({}) do |field, memo|
+    [
+      :name, :version, :full_name,  :title, :description, :published_at,
+      :authors, :maintainers
+    ].each_with_object({}) do |field, memo|
       memo[field] = self.send field
     end
   end

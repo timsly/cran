@@ -7,6 +7,8 @@ RSpec.describe RemotePackage, type: :model do
   let(:package_title) { 'A3: Accurate, Adaptable, and Accessible Error Metrics for Predictive Models' }
   let(:package_description) { 'This package supplies tools for tabulating and analyzing the results of predictive models. The methods employed are applicable to virtually any predictive model and make comparisons between different methodologies straightforward.' }
   let(:package_published_at) { '2013-03-26 19:58:40' }
+  let(:package_authors) { [{ name: 'Scott Fortmann-Roe', email: nil }] }
+  let(:package_maintainers) { [{ name: 'Scott Fortmann-Roe', email: 'scottfr@berkeley.edu' }] }
   let(:remote_package) { RemotePackage.new package_name, package_version }
 
   describe '.all', :vcr do
@@ -18,6 +20,32 @@ RSpec.describe RemotePackage, type: :model do
       expect(package).to be_kind_of RemotePackage
       expect(package.name).to eql package_name
       expect(package.version).to eql package_version
+    end
+  end
+
+  describe '.parse_people' do
+    it 'should parse pair of name and email' do
+      string = 'Evie Fjord <ev@fjord.com>, April McDonald'
+      result = RemotePackage.parse_people string
+
+      expect(result).to include name: 'Evie Fjord', email: 'ev@fjord.com'
+      expect(result).to include name: 'April McDonald', email: nil
+    end
+
+    it 'should allow parse special case with and in the end' do
+      string = 'Evie Fjord <ev@fjord.com> and April McDonald'
+      result = RemotePackage.parse_people string, true
+
+      expect(result).to include name: 'Evie Fjord', email: 'ev@fjord.com'
+      expect(result).to include name: 'April McDonald', email: nil
+    end
+
+    it 'should parse correctly when only email present' do
+      string = '<ev@fjord.com>, April McDonald'
+      result = RemotePackage.parse_people string
+
+      expect(result).to include name: '', email: 'ev@fjord.com'
+      expect(result).to include name: 'April McDonald', email: nil
     end
   end
 
@@ -61,6 +89,18 @@ RSpec.describe RemotePackage, type: :model do
     its(:published_at) { is_expected.to be_kind_of DateTime }
   end
 
+  describe '#authors', :vcr do
+    subject { remote_package }
+
+    its(:authors) { is_expected.to eql package_authors }
+  end
+
+  describe '#maintainers', :vcr do
+    subject { remote_package }
+
+    its(:maintainers) { is_expected.to eql package_maintainers }
+  end
+
   describe '#to_hash', :vcr do
     subject { remote_package.to_hash }
 
@@ -70,6 +110,8 @@ RSpec.describe RemotePackage, type: :model do
       is_expected.to include full_name: package_full_name
       is_expected.to include title: package_title
       is_expected.to include description: package_description
+      is_expected.to include authors: package_authors
+      is_expected.to include maintainers: package_maintainers
       is_expected.to include published_at: DateTime.parse(package_published_at)
     end
   end

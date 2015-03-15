@@ -1,0 +1,9 @@
+.col-md-4 class="package-#{scope}"
+  h4 = "#{scope.to_s.titleize}:"
+  ul
+    - @package.send(scope).each do |participant|
+      - first_part = participant[:name].present? ? participant[:name] : participant[:email]
+      - second_part = participant[:name].present? && participant[:email].present? && " (#{participant[:email]})" || ''
+      li
+        b = first_part
+        = second_part
