@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+ruby '2.1.3'
+
 gem 'rails', '4.2.0'
 
 gem 'pg'
@@ -10,11 +12,12 @@ gem 'coffee-rails', '~> 4.1.0'
 gem 'jquery-rails'
 gem 'turbolinks'
 gem 'bootstrap-sass'
-gem 'kaminari'
-gem 'bootstrap-kaminari-views'
+gem 'asset_sync'
 
 gem 'treetop-dcf', require: false
 gem 'slim'
+gem 'kaminari'
+gem 'bootstrap-kaminari-views'
 
 group :development, :test do
   gem 'byebug'
@@ -38,4 +41,8 @@ group :test do
   gem 'webmock'
   gem 'rspec-its'
   gem 'rspec-collection_matchers'
+end
+
+group :production do
+  gem 'rails_12factor'
 end
