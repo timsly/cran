@@ -25,27 +25,35 @@ RSpec.describe RemotePackage, type: :model do
 
   describe '.parse_people' do
     it 'should parse pair of name and email' do
-      string = 'Evie Fjord <ev@fjord.com>, April McDonald'
-      result = RemotePackage.parse_people string
+      result = RemotePackage.parse_people 'Evie Fjord <ev@fjord.com>, April McDonald'
 
       expect(result).to include name: 'Evie Fjord', email: 'ev@fjord.com'
       expect(result).to include name: 'April McDonald', email: nil
     end
 
     it 'should allow parse special case with and in the end' do
-      string = 'Evie Fjord <ev@fjord.com> and April McDonald'
-      result = RemotePackage.parse_people string, true
+      result = RemotePackage.parse_people 'Evie Fjord <ev@fjord.com> and April McDonald'
 
       expect(result).to include name: 'Evie Fjord', email: 'ev@fjord.com'
       expect(result).to include name: 'April McDonald', email: nil
     end
 
     it 'should parse correctly when only email present' do
-      string = '<ev@fjord.com>, April McDonald'
-      result = RemotePackage.parse_people string
+      result = RemotePackage.parse_people '<ev@fjord.com>, April McDonald'
 
       expect(result).to include name: '', email: 'ev@fjord.com'
       expect(result).to include name: 'April McDonald', email: nil
+    end
+
+    it 'should work in some extrea cases' do
+      result = RemotePackage.parse_people 'Robert M. Cox, and Ryan Calsbeek'
+      expect(result).to include name: 'Robert M. Cox', email: nil
+      expect(result).to include name: 'Ryan Calsbeek', email: nil
+
+      result = RemotePackage.parse_people 'Matt Nunes [aut, cre], Dennis Prangle [aut]'
+      expect(result).to have(2).items
+      expect(result).to include name: 'Matt Nunes [aut, cre]', email: nil
+      expect(result).to include name: 'Dennis Prangle [aut]', email: nil
     end
   end
 

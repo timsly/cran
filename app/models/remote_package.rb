@@ -16,10 +16,8 @@ class RemotePackage
       end
     end
 
-    def parse_people(data, with_and_in_the_end = nil)
-      splited = data.split ', '
-      splited = splited[0...-1] + splited[-1].split(' and ') if with_and_in_the_end
-      splited.map do |pair|
+    def parse_people(data)
+      data.split(/\s*(?:,?\s+and\s|\,(?![^\[]*\]))\s*/).map do |pair|
         name = pair
         email = nil
         if matched = /(.*?)\s?<([^>]+)/.match(pair)
@@ -52,7 +50,7 @@ class RemotePackage
   end
 
   def authors
-    @authors ||= self.class.parse_people(details['Author'], true)
+    @authors ||= self.class.parse_people(details['Author'])
   end
 
   def maintainers
