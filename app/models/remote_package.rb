@@ -68,8 +68,8 @@ class RemotePackage
       raise('Cannot find DESCRIPTION') unless description
       Dcf.parse(description).first
     ensure
-      gz.close
-      tar.close
+      gz.close if gz
+      tar.close if tar
     end
   end
 
