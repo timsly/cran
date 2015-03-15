@@ -1,5 +1,5 @@
 .container
-  - if @packages
+  - if @packages.present?
     - @packages.each do |package|
       .media
         .media-body
