@@ -1,2 +1,7 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
+
+html.turbolinks-progress-bar::before {
+  background-color: $brand-primary !important;
+  height: 2px !important;
+}
